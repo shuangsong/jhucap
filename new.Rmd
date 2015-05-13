@@ -1,0 +1,121 @@
+---
+title: "Capstone report"
+author: "Stephanie"
+output: html_document
+---
+
+
+1 Background of SwiftKey project:
+---
+
+SwiftKey is a smart keyboard that makes it easier for people to type on their mobile devices. A good example is that when you type a sentence or a phrase, the keyboard presents some options for what the next word might be.  en _US is used to analysis english version of text data. In this report I use three data files: twitts, blogs and news inside en _US. 
+
+2 Concept of n-gram: 
+---
+
+An n-gram is a contiguous sequence of n items from a given sequence of text or speech. The items can be phonemes, syllables, letters, words or base pairs according to the application. The n-grams typically are collected from a text or speech corpus. An n-gram of size 1 is referred to as a "unigram"; size 2 is a "bigram"; size 3 is a "trigram". In this project we will use 2-gram(bigram), 3-gram(trigram), and 4-gram(quadgram) in the prediction. 
+
+The next step is tokenize sentences. Tokenization is the process of breaking a stream of text up into words, phrases, symbols, or other meaningful elements called tokens. For example, tokenize "how are you" into 2-grams returns two elements : "how are" , "are you"). 
+
+
+
+3 basic summary of data
+---
+Let's see how many lines and how many words in each data file: twitts, blogs, news.
+
+```{r firstchunk,echo=FALSE}
+rm(list=ls())
+data_path<-paste(getwd(),"/final/en_US", sep="")
+setwd(data_path)
+read.table("C:/Users/stephanie song/Desktop/wordsum.txt")
+```
+
+
+```{r 2ndchunk, echo=FALSE}
+df_unigram<-read.csv("C:/Users/stephanie song/Desktop/unigram.csv")
+df_bigram<-read.csv("C:/Users/stephanie song/Desktop/bigram.csv")
+df_trigram<-read.csv("C:/Users/stephanie song/Desktop/trigram.csv")
+```
+
+4 visualization of data: 
+---
+unigram wordcloud for twitts, news and blogs(from left to right): 
+
+
+```{r 3rdchunk, echo=FALSE}
+library(png)
+library(grid)
+img<-readPNG("C:/Users/stephanie song/Desktop/wordcloud2.png")
+grid.raster(img)
+
+```
+
+Below is visualizations (unigram, 2-gram, 3-gram) when use data that combines twitts, news and blogs.
+unigram corpus visualization:
+
+
+```{r 4thchunk, echo=FALSE,fig.width =9, fig.height = 5, dpi = 144}
+#visualization : 
+df_order<-df_unigram[order(df_unigram$count,decreasing=TRUE), ]
+df_uni<-head(df_order, 30)
+#plot bar plot to show words and their frequency: 
+barplot(df_uni$count, names.arg=df_uni$terms, horiz=FALSE, border=NA, las=1, main="barplot of word counts",ylab="unigram names",xlab="word count",col="blue")
+```
+2-gram corpus visualization:
+
+```{r 5thchunk, echo=FALSE,fig.width =9, fig.height = 5, dpi = 144}
+#visualization : 
+df_order2<-df_bigram[order(df_bigram$count,decreasing=TRUE), ]
+df_bi<-head(df_order2, 30)
+#plot bar plot to show words and their frequency: 
+barplot(df_bi$count, names.arg=df_bi$terms, horiz=FALSE, border=NA, las=1, main="barplot of word counts",xlab="word count",col="blue")
+```
+
+3-gram corpus visualization:
+```{r 6thchunk, echo=FALSE,fig.width =9, fig.height = 5, dpi = 144}
+#visualization : 
+df_order3<-df_trigram[order(df_trigram$count,decreasing=TRUE), ]
+df_tri<-head(df_order3, 30)
+#plot bar plot to show words and their frequency: 
+barplot(df_tri$count, names.arg=df_tri$terms, horiz=FALSE, border=NA, las=1, main="barplot of word counts",xlab="word count",col="blue")
+```
+
+
+
+
+
+5 Future plan(shiny app)
+---
+About shiny app
+
+My app is designed to use on mobile phone. It has input part and output part to show the predicted next word. Below there are some points that gives me a clear structure on building this app:
+
+* The interface of my shiny app generally consists of two pages(input & output page, introduction page).
+
+* In the first page, it has two parts: input part(ngram method input part, and sentence text input part), and output part(next single word output part, and the other possible words output part).
+
+Instruction on how to use it: 
+
+1. First, select ngram method(2gram, 3gram or 4gram), then type sentence in the text input part.
+
+2. Second, click "update" button and check output(to see possible next word).
+
+3. The input sentence is cleaned (change to lower case, remove whitespace, punctuation,stopwords, etc. ). Use model I create and use algorithm to predict based on input sentence.
+
+About my ngram model:
+
+* 4-gram takes last 3 words in a sentence/phrase(input), then search 4-gram tables and find 4-gram with highest frequency. Last word of 4-gram is what we want. 3-gram takes last 2 words; 2-gram takes last one word.
+
+* back off method: if it returns no observation with 4-gram method, then it backs off to its lower gram method(that is 3-gram method) until it has possible output word. 
+
+
+6 Reference:
+---
+1. http://en.wikipedia.org/wiki/N-gram
+
+2. https://class.coursera.org/nlp
+
+3. Download data from a corpus called HC Corpora http://www.corpora.heliohost.org
+
+4. See the readme file at http://www.corpora.heliohost.org/aboutcorpus.html for details
+
