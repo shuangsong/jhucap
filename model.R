@@ -133,7 +133,7 @@ predict_trigram("we want use")
 predict_trigram("data science course")
 predict_trigram("i want some milk")
 predict_trigram("there is a coffee")
-
+predict_trigram("i want some baccon and beer")
 
 
 
@@ -169,11 +169,13 @@ predict_quagram<-function(input){
                                         return(single)
                                 }
                                 find3<-head(find3,10)
+                                
                                 terms<-as.character(find3$terms)
                                 return(terms)
                                 
                         }
                         find2<-head(find2,10)
+                       
                         term<-as.character(find2$terms)
                         return(term)
                 }
@@ -184,8 +186,39 @@ predict_quagram<-function(input){
                 find$pred<-find_mat[,4]
                 clean_tail4<-tail(unlist(strsplit(input_clean, " ")), 3)
                 words4<-paste(clean_tail4[1], clean_tail4[2],clean_tail4[3], sep=" ")
-                start_with_term4<-paste("^","\\b", words4,"\\b","$", sep="")
-                find4<-df_trigram[grep(start_with_term4, df_trigram$terms),]
+                find4<-df_trigram[grep(paste("^","\\b", words4,"\\b", "$",sep=""), df_trigram$terms),]
+                if (nrow(find4)==0) {
+                        
+                                clean_tail2<-tail(unlist(strsplit(input_clean, " ")), 2)
+                                words2<-paste(clean_tail2[1], clean_tail2[2], sep=" ")
+                                start_with_term2<-paste("^","\\b", words2,"\\b", sep="")
+                                find2<-df_trigram[grep(start_with_term2, df_trigram$terms),]
+                                
+                                if(nrow(find2)==0){
+                                        clean_tail3<-tail(unlist(strsplit(input_clean, " ")), 1)
+                                        start_with_term3<-paste("^","\\b", clean_tail3,"\\b", sep="")
+                                        find3<-df_bigram[grep(start_with_term3, df_bigram$terms),] 
+                                        
+                                        if(nrow(find3)==0){
+                                                uni<-df_unigram[sample(nrow(df_unigram),nrow(df_unigram)/1000,replace=FALSE,prob=NULL),]
+                                                uni<-head(uni)
+                                                single<-as.character(uni$terms)
+                                                return(single)
+                                        }
+                                        find3<-head(find3,10)
+                                        find_mat3<-matrix(unlist(strsplit(find3$terms, " ")), ncol=2, byrow=TRUE)
+                                        find3$pred<-find_mat3[,2]
+                                        terms<-as.character(find3$pred)
+                                        return(terms)
+                                        
+                                }
+                                find2<-head(find2,10)
+                                find_mat2<-matrix(unlist(strsplit(find2$terms, " ")), ncol=3, byrow=TRUE)
+                                find2$pred<-find_mat[,3]
+                                term<-as.character(find2$pred)
+                                return(term)
+                        }
+                
                 for (i in 1: nrow(find)) {
                         new_find<-data.frame("pred"=find[i,4], "pred_prob"=find[i,2]/find4[1,2])
                         merge<-rbind(merge, data.frame(new_find))
@@ -196,5 +229,6 @@ predict_quagram<-function(input){
         }}
 
 predict_quagram("we go to see south carolina gamecock")
-predict_quagram("attorney gener eric")
 predict_quagram("we went to new york")
+predict_quagram("how cold is your family   ")
+predict_quagram("i want some baccon and beer")
