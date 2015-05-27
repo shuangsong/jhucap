@@ -169,55 +169,27 @@ predict_quagram<-function(input){
                                         return(single)
                                 }
                                 find3<-head(find3,10)
-                                
-                                terms<-as.character(find3$terms)
-                                return(terms)
+                                find3$terms<-as.character(find3$terms)
+                                find_mat3<-matrix(unlist(strsplit(find3$terms, " ")), ncol=2, byrow=TRUE)
+                                find3$pred<-find_mat3[,2]
+                                terms3<-as.character(find3$pred)
+                                return(terms3)
                                 
                         }
                         find2<-head(find2,10)
-                       
-                        term<-as.character(find2$terms)
-                        return(term)
+                        find2$terms<-as.character(find2$terms)
+                        find_mat2<-matrix(unlist(strsplit(find2$terms, " ")), ncol=3, byrow=TRUE)
+                        find2$pred<-find_mat2[,3]
+                        term2<-as.character(find2$pred)
+                        return(term2)
                 }
                 
                 merge<-NULL
                 find$terms<-as.character(find$terms)
                 find_mat<-matrix(unlist(strsplit(find$terms, " ")), ncol=4, byrow=TRUE)
                 find$pred<-find_mat[,4]
-                clean_tail4<-tail(unlist(strsplit(input_clean, " ")), 3)
-                words4<-paste(clean_tail4[1], clean_tail4[2],clean_tail4[3], sep=" ")
-                find4<-df_trigram[grep(paste("^","\\b", words4,"\\b", "$",sep=""), df_trigram$terms),]
-                if (nrow(find4)==0) {
-                        
-                                clean_tail2<-tail(unlist(strsplit(input_clean, " ")), 2)
-                                words2<-paste(clean_tail2[1], clean_tail2[2], sep=" ")
-                                start_with_term2<-paste("^","\\b", words2,"\\b", sep="")
-                                find2<-df_trigram[grep(start_with_term2, df_trigram$terms),]
-                                
-                                if(nrow(find2)==0){
-                                        clean_tail3<-tail(unlist(strsplit(input_clean, " ")), 1)
-                                        start_with_term3<-paste("^","\\b", clean_tail3,"\\b", sep="")
-                                        find3<-df_bigram[grep(start_with_term3, df_bigram$terms),] 
-                                        
-                                        if(nrow(find3)==0){
-                                                uni<-df_unigram[sample(nrow(df_unigram),nrow(df_unigram)/1000,replace=FALSE,prob=NULL),]
-                                                uni<-head(uni)
-                                                single<-as.character(uni$terms)
-                                                return(single)
-                                        }
-                                        find3<-head(find3,10)
-                                        find_mat3<-matrix(unlist(strsplit(find3$terms, " ")), ncol=2, byrow=TRUE)
-                                        find3$pred<-find_mat3[,2]
-                                        terms<-as.character(find3$pred)
-                                        return(terms)
-                                        
-                                }
-                                find2<-head(find2,10)
-                                find_mat2<-matrix(unlist(strsplit(find2$terms, " ")), ncol=3, byrow=TRUE)
-                                find2$pred<-find_mat[,3]
-                                term<-as.character(find2$pred)
-                                return(term)
-                        }
+                find4<-df_trigram[grep(paste("^","\\b", words,"\\b", "$",sep=""), df_trigram$terms),]
+                
                 
                 for (i in 1: nrow(find)) {
                         new_find<-data.frame("pred"=find[i,4], "pred_prob"=find[i,2]/find4[1,2])
