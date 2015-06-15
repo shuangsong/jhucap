@@ -1,35 +1,49 @@
-
 library(shiny)
-shinyUI(navbarPage("JHU Capstone project shiny app-NLP in R",
-                   tabPanel("page1-ngram prediction",
+library(shinythemes)
+
+
+shinyUI(fluidPage(theme = shinytheme("cerulean"),
+        navbarPage("JHU Capstone project shiny app-NLP in R",inverse = FALSE, collapsible = FALSE,
+                   tabPanel("page1-ngram prediction",(includeScript("look.js")),
                             sidebarLayout(
                                     sidebarPanel(
                                             
-                                            textInput("text", label=h3("Text input"),value = ""),
+                                            textInput("text", label=h3("Text input:"),value = ""),
+                                            helpText("Input a sentence and click update button"),
                                             radioButtons("radiobutton", label=h3("ngram-prediction:"),
                                                          choice=list("Bigram prediction"="bi",
                                                                      "Trigram prediction"="tri",
                                                                      "Quadgram prediction"="qua")),
                                             br(),
                                             submitButton("Update"),
-                                            helpText("note: type text into text input and select which kind of ngram
-                                                     you want to do prediction with, and then click update button to see.
-                                                     For example type:
-                                                     we went to new york, 
-                                                     happi mother, 
-                                                     ")),
+                                            helpText(h5("Note:")),
+                                            helpText("1, Input a sentence", style="color:#BF3EFF"),
+                                            helpText("2, Select n-gram method for predicting",style="color:#BF3EFF"),
+                                            helpText("3, Click" ,code("Update"), " button",style="color:#BF3EFF"),
+                                            helpText("4, Wait for predictions and check results on the right of your screen.",style="color:#BF3EFF"),
+                                            hr(),
+                                            helpText(h5("Input example:")),
+                                            helpText(code("want some milk"), code("went to new york"), code("little potato"),"etc...")
+                                            ),
                                     
                                     mainPanel(
+                                            column(5,
+                                                   h4("Next word cloud prediction:"),
+                                                   hr(),
+                                                   plotOutput("plot")
+                                                  ),
+                                            column(5,
+                                                   h4("Next word text output:"),
+                                                   hr(),
+                                                   verbatimTextOutput("textout"),
+                                                   lapply(1:nrow(word), function(i) {
+                                                           uiOutput(paste0('b', i))
+                                                   })
                                             
-                                            h4("N-grams Prediction text output"),
-                                            plotOutput("textoutput"),
-                                            br(),
-                                            h4("N-grams Prediction wordcloud plot"),
-                                            textOutput("plot")
-                                            
-                                    )
-                                            )
-                                    ),
+                                                  )
+                                             )
+                                      )
+                            ),
                    
                    tabPanel("page2-Background of NLP and references", HTML('
                                                                            <h3>What is n-gram? </h3>
@@ -65,14 +79,7 @@ shinyUI(navbarPage("JHU Capstone project shiny app-NLP in R",
                                                                       What you entered must be more than one word, if you entered just one word or nothing, 
                                                                       it will returns "please enter some words". If it has no prediction on the sentence, it will returns"
                                                                       no prediction" .</p>
-                                                                    
                                                                       
                                                                       
-                                                                      '))))
-
-
-
-
-
-
-
+                                                                      
+                                                                      ')))))
