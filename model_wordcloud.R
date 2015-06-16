@@ -25,10 +25,10 @@ df_trigram<-read.csv("C:/Users/stephanie song/Desktop/final/en_US/data/tri.csv")
 df_quagram<-read.csv("C:/Users/stephanie song/Desktop/final/en_US/data/qua.csv")
 
 
-# add prediction function : (bigram, trigra, and quagram)
+# add prediction function : (bigram, trigram, and quagram)
 predict_bi<- function(input) {
-        if (sapply(gregexpr("\\S+", input), length)<=1){
-                return("the")
+        if (sapply(gregexpr("[[:alpha:]]+", input), function(x) sum(x > 0))==0){
+                return("error")
         }else {
                 input1<-tolower(input)
                 input2<-str_replace_all(input1, pattern="[[:punct:]]","") #remove punctuations
@@ -79,8 +79,8 @@ predict_bi<- function(input) {
 
 
 predict_tri<-function(input){
-        if (sapply(gregexpr("\\S+", input), length)<=1){
-                return("the")
+        if (sapply(gregexpr("[[:alpha:]]+", input), function(x) sum(x > 0))==0){
+                return("error")
         }else {
                 input1<-tolower(input)
                 input2<-str_replace_all(input1, pattern="[[:punct:]]","") 
@@ -142,8 +142,8 @@ predict_tri<-function(input){
 
 
 predict_qua<-function(input){
-       if (sapply(gregexpr("\\S+", input), length)<=1){
-                return("the")
+        if (sapply(gregexpr("[[:alpha:]]+", input), function(x) sum(x > 0))==0){
+                return("error")
         }else {
                 input1<-tolower(input)
                 input2<-str_replace_all(input1, pattern="[[:punct:]]","") 
