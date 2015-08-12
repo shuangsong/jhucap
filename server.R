@@ -10,13 +10,17 @@ library(qdap) # count word
 library(caroline) # plot text only plot
 
 
-path<-getwd()
-df_unigram<-read.csv(paste(path, "/uni.csv", sep=""))
-df_bigram <-read.csv(paste(path, "/bi.csv",  sep=""))
-df_trigram<-read.csv(paste(path, "/tri.csv", sep=""))
-df_quagram<-read.csv(paste(path, "/qua.csv", sep=""))
+df_unigram<-read.csv("C:/Users/stephanie song/Desktop/final/en_US/data/uni.csv")
+df_bigram<-read.csv("C:/Users/stephanie song/Desktop/final/en_US/data/bi.csv")
+df_trigram<-read.csv("C:/Users/stephanie song/Desktop/final/en_US/data/tri.csv")
+df_quagram<-read.csv("C:/Users/stephanie song/Desktop/final/en_US/data/qua.csv")
+#df_unigram<-load('C:/Users/stephanie song/Desktop/final/en_US/data/uni.Rdata',.GlobalEnv)
+#df_bigram<-load('C:/Users/stephanie song/Desktop/final/en_US/data/bi.Rdata',.GlobalEnv)
+#df_trigram<-load('C:/Users/stephanie song/Desktop/final/en_US/data/tri.Rdata',.GlobalEnv)
+#df_quagram<-load('C:/Users/stephanie song/Desktop/final/en_US/data/qua.Rdata',.GlobalEnv)
+
 # add prediction function : (bigram, trigram, and quagram)
-#source(paste(path, "/model.R", sep=""))
+
 source(paste(path, "/model_wordcloud.R", sep=""))
 #create a funtion that can use to identify radiobutton while do the prediction: 
 
@@ -36,48 +40,38 @@ shinyServer(function(input, output,session) {
         radiobutton<-reactive({input$radiobutton})
         inputText<-reactive({input$text})
         
-        terms<-reactive({
-                isolate({
-                        withProgress({
-                                setProgress(message="Processing corpus...")
+        #terms<-reactive({
+                #isolate({
+                        #withProgress({
+                                #setProgress(message="Processing corpus...")
                                 
-                        })
-                })
-        })
-        
-        output$textout<-renderPrint({
-                word<-nextword(radiobutton(),inputText,input)
-                word<-as.data.frame(word)
-                msg<-NULL
-                for (i in 1:nrow(word)) {
-                        line<-paste("Top#", i, "is:" ,word[i,])
-                        line<-as.data.frame(line)
-                        msg<-rbind(msg, data.frame(line))
-                        return(msg)
-                }
-                #lapply(1:nrow(word), function(i) {
-                        #output[[paste0('b', i)]] <- renderUI({
-                                #strong(paste0('Top#', i))
                         #})
-        })
-
+                #})
+        #})
         
-        wordcloud_rep <- repeatable(wordcloud)
-        output$plot <- renderPlot({
-                string<-nextword(radiobutton(),inputText,input)
-                df<-data.frame(string)
-                #if (df[1,]=="error"){
-                       # par(mar=c(1,1,1,1))
-                        #layout(rbind(c(1,1,1),c(2,3,4), c(5,6,7)),
-                         #      widths=c(5, 10,10) , heights=c(5, 10,10))
-                       # textplot('please enter one or more than one word', cex=2)
-               # } else {
-                        df$order<-c(nrow(df):1)
-                        tb<-table(df$string)
-                        d<-data.frame(word=names(tb), freq=df$order)
-                        wordcloud_rep(d$word, d$freq, scale=c(4,0.2),colors=brewer.pal(5,"Set1"),random.order=TRUE,max.words=30)
+        output$textout<-renderTable({
+                predictions<-nextword(radiobutton(),inputText,input)
+                df<-as.data.frame(predictions)
+                #msg<-NULL
+                #for (i in 1:nrow(df)) {
+                        #prediction<-paste("Top#", i, "is:" ,df[i,1])
+                        #msg<-rbind(msg, data.frame(prediction))
+                        
                         
                 #}
-                
+                return(df)
         })
+        
+        
+        #wordcloud_rep <- repeatable(wordcloud)
+        #output$wordcloud <- renderPlot({
+                #word<-nextword(radiobutton(),inputText,input)
+                #df<-data.frame(word)
+                #df$order<-c(nrow(df):1)
+                #tb<-table(df$string)
+                #d<-data.frame(word=df$word, freq=df$order)
+                #wordcloud_rep(d$word, d$freq, max.words=30,scale=c(4,0.2),colors=brewer.pal(5,"Set1"))
+                
+                
+        #})
 })

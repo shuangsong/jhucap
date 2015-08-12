@@ -17,13 +17,10 @@ library(pryr) # to see file size with command object_size
 library(wordcloud) # for wordcloud
 library(tm)
 #read in data frame csv files: 
-
-
 df_unigram<-read.csv("C:/Users/stephanie song/Desktop/final/en_US/data/uni.csv")
 df_bigram<-read.csv("C:/Users/stephanie song/Desktop/final/en_US/data/bi.csv")
 df_trigram<-read.csv("C:/Users/stephanie song/Desktop/final/en_US/data/tri.csv")
 df_quagram<-read.csv("C:/Users/stephanie song/Desktop/final/en_US/data/qua.csv")
-
 
 # add prediction function : (bigram, trigram, and quagram)
 predict_bi<- function(input) {
@@ -43,35 +40,38 @@ predict_bi<- function(input) {
                         term<-as.character(uni$terms)
                         return(term)
                 }
-                find<-df_bigram[grep(start_with_term, df_bigram$terms),]
-                merge<-NULL
+                #find<-df_bigram[grep(start_with_term, df_bigram$terms),]
+                #merge<-NULL
+                find<-head(find)
                 find$terms<-as.character(find$terms)
                 find_mat<-matrix(unlist(strsplit(find$terms, " ")), ncol=2, byrow=TRUE)
                 find$pred<-find_mat[,2]
-                find2<-df_unigram[grep(paste("^","\\b", clean_tail,"\\b", sep=""), df_unigram$terms),]
-                if (nrow(find2)==0){
-                        warning("There is no prediction")
-                        return()
-                }
-                find2<-data.frame(find2)
-                for (i in 1: nrow(find)) {
-                        new_find<-data.frame("pred"=find[i,3], "pred_prob"=find[i,2]/find2[1,2])
-                        merge<-rbind(merge, data.frame(new_find))
-                }
-                high_prob<-merge[order(-merge$pred_prob),]
-                high_prob<-head(high_prob,10)
-                possible_term<-as.character(high_prob$pred)
-                return(possible_term)
+                terms<-as.character(find$pred)
+                return(terms)
+                #find2<-df_unigram[grep(paste("^","\\b", clean_tail,"\\b", sep=""), df_unigram$terms),]
+                #if (nrow(find2)==0){
+                #warning("There is no prediction")
+                #return()
+                #}
+                #find2<-data.frame(find2)
+                #for (i in 1: nrow(find)) {
+                #new_find<-data.frame("pred"=find[i,3], "pred_prob"=find[i,2]/find2[1,2])
+                #merge<-rbind(merge, data.frame(new_find))
+                #}
+                #high_prob<-merge[order(-merge$pred_prob),]
+                #high_prob<-head(high_prob,10)
+                #possible_term<-as.character(high_prob$pred)
+                #return(possible_term)
         }
 }
 #try
 #predict_bi("how do you know last")
-#predict_bi("first")
-#predict_bi("nice weather")
-#predict_bi("what the hell")
-#predict_bi("how are you the")
-#predict_bi("what the hell")
-#predict_bi("we went to the orlando")
+predict_bi("first")
+predict_bi("nice weather")
+predict_bi("what the hell")
+predict_bi("how are you the")
+predict_bi("what the hell")
+predict_bi("we went to the orlando")
 
 
 
@@ -101,7 +101,7 @@ predict_tri<-function(input){
                                 term<-as.character(uni$terms)
                                 return(term)
                         }
-                        find2<-head(find2,10)
+                        find2<-head(find2)
                         find2$terms<-as.character(find2$terms)
                         find_mat<-matrix(unlist(strsplit(find2$terms, " ")), ncol=2, byrow=TRUE)
                         find2$pred<-find_mat[,2]
@@ -109,22 +109,24 @@ predict_tri<-function(input){
                         return(terms)
                         
                 }
-                merge<-NULL
+                #merge<-NULL
+                #find$terms<-as.character(find$terms)
+                
+                #find<-df_trigram[grep(paste("^","\\b",words,"\\b", "$",sep=""), df_trigram$terms),]
+                find<-head(find)
                 find$terms<-as.character(find$terms)
                 find_mat<-matrix(unlist(strsplit(find$terms, " ")), ncol=3, byrow=TRUE)
                 find$pred<-find_mat[,3]
-                clean_tail3<-tail(unlist(strsplit(input_clean, " ")), 2)
-                words2<-paste(clean_tail3[1], clean_tail3[2], sep=" ")
-                find3<-df_bigram[grep(paste("^","\\b",words2,"\\b", "$",sep=""), df_bigram$terms),]
-                
-                for (i in 1: nrow(find)) {
-                        new_find<-data.frame("pred"=find[i,3], "pred_prob"=find[i,2]/find3[1,2])
-                        merge<-rbind(merge, data.frame(new_find))
-                }
-                high_prob<-merge[order(-merge$pred_prob),]
-                high_prob<-head(high_prob,10)
-                possible_term<-as.character(high_prob$pred)
-                return(possible_term)
+                tri_term<-as.character(find$pred)
+                return(tri_term)
+                #for (i in 1: nrow(find)) {
+                        #new_find<-data.frame("pred"=find[i,3], "pred_prob"=find[i,2]/find3[1,2])
+                        #merge<-rbind(merge, data.frame(new_find))
+                #}
+                #high_prob<-merge[order(-merge$pred_prob),]
+                #high_prob<-head(high_prob,10)
+                #possible_term<-as.character(high_prob$pred)
+                #return(possible_term)
         }
 }
 
@@ -134,7 +136,7 @@ predict_tri<-function(input){
 #predict_tri("we want use")
 #predict_tri("data science course")
 #predict_tri("i want some milk")
-#predict_tri("there is a coffee")
+predict_tri("there is a coffee")
 #predict_tri("i want some baccon and beer")
 
 
@@ -170,7 +172,7 @@ predict_qua<-function(input){
                                         single<-as.character(uni$terms)
                                         return(single)
                                 }
-                                find3<-head(find3,10)
+                                find3<-head(find3)
                                 find3$terms<-as.character(find3$terms)
                                 find_mat3<-matrix(unlist(strsplit(find3$terms, " ")), ncol=2, byrow=TRUE)
                                 find3$pred<-find_mat3[,2]
@@ -178,7 +180,7 @@ predict_qua<-function(input){
                                 return(terms3)
                                 
                         }
-                        find2<-head(find2,10)
+                        find2<-head(find2)
                         find2$terms<-as.character(find2$terms)
                         find_mat2<-matrix(unlist(strsplit(find2$terms, " ")), ncol=3, byrow=TRUE)
                         find2$pred<-find_mat2[,3]
@@ -186,24 +188,27 @@ predict_qua<-function(input){
                         return(term2)
                 }
                 
-                merge<-NULL
+                #merge<-NULL
+                find$terms<-as.character(find$terms)
+                #find4<-df_trigram[grep(paste("^","\\b", words,"\\b", "$",sep=""), df_trigram$terms),]
+                find<-head(find)
                 find$terms<-as.character(find$terms)
                 find_mat<-matrix(unlist(strsplit(find$terms, " ")), ncol=4, byrow=TRUE)
                 find$pred<-find_mat[,4]
-                find4<-df_trigram[grep(paste("^","\\b", words,"\\b", "$",sep=""), df_trigram$terms),]
+                term<-as.character(find$pred)
+                return(term)
                 
-                
-                for (i in 1: nrow(find)) {
-                        new_find<-data.frame("pred"=find[i,4], "pred_prob"=find[i,2]/find4[1,2])
-                        merge<-rbind(merge, data.frame(new_find))
-                }
-                high_prob<-merge[order(-merge$pred_prob),]
-                possible_term<-as.character(high_prob$pred)
-                return(possible_term)
+                #for (i in 1: nrow(find)) {
+                        #new_find<-data.frame("pred"=find[i,4], "pred_prob"=find[i,2]/find4[1,2])
+                        #merge<-rbind(merge, data.frame(new_find))
+                #}
+                #high_prob<-merge[order(-merge$pred_prob),]
+                #possible_term<-as.character(high_prob$pred)
+                #return(possible_term)
         }
 }
 
-#predict_qua("we go to see south carolina gamecock")
-#predict_qua("we went to new york")
-#predict_qua("how cold is your family   ")
+predict_qua("we go to see south carolina gamecock")
+predict_qua("we went to new york")
+predict_qua("how cold is your family   ")
 #predict_qua("i want some baccon and beer")

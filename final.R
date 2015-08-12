@@ -38,22 +38,47 @@ all<-paste(ran_twitts, ran_news, ran_blogs)
 #function to clean corpus , get dtm.
 #tokenization : create corpus 
 clean<-function(all){
-        my_corp<-VCorpus(VectorSource(all),readerControl=list(language="lat"))
-        my_corp<-tm_map(my_corp, PlainTextDocument)
-        my_corp<-tm_map(my_corp, content_transformer(removePunctuation))
+        all<-gsub("can't"," can not", all) 
+        all<-gsub("n't", " not", all)   #expand words contractions 
+        all<-gsub("'ve"," have", all)
+        all<-gsub("'m|’m"," am", all)
+        all<-gsub("'ll"," will", all)
+        all<-gsub("'s|’s"," is", all)
+        all<-gsub(":m","m",all)  # p:m 
+        all<-gsub("u.s.","us",all)
+        all<-gsub("'re"," are",all)
+        all<-gsub("'d|’d"," had",all)
+        all<-gsub("N.Y."," NY", all)
+        all<-gsub("[0-9]", "", all)
+        all<-gsub("“|”|’|‘", " ", all)
+        all<-gsub("[[:punct:]]+", " ", all)
+        all<-gsub("\u0092|\u0093|\u0094|\u0090","",all)
+        all<-gsub("^u$|^U$", "you", all)
+        all<-gsub("\\W"," ",all)  #remove not word
+        all<-gsub("[^[:alpha:] ]","",all)
+        all<-tolower(all)
+        corp<-VCorpus(VectorSource(all),readerControl=list(language='UTF-8'))
+        my_corp<-tm_map(corp, removePunctuation)
         my_corp<-tm_map(my_corp, stripWhitespace)
         my_corp<-tm_map(my_corp, content_transformer(removeNumbers))
-        my_corp<-tm_map(my_corp, stemDocument)
         my_corp<-tm_map(my_corp, content_transformer(tolower)) #convert to lower case
         my_corp<-tm_map(my_corp, removeWords, stopwords("english"))
-        #remove profanity words: (I will upload profanity words in my github)
         profane_path<-paste(getwd(), "/profane.txt",sep="")
         my_corp<-tm_map(my_corp, removeWords, profane_path)
-        
+        my_corp<-tm_map(corp, PlainTextDocument)
+        return(my_corp)
+        #corp_copy<- my_corp
+        #my_corp<-tm_map(my_corp, stemDocument)
+        #stm<-wordStem(my_corp)
+        #stemmer_corp<-stemCompletion(my_corp, corp_copy, "prevalent")
+        #stemmer<-tm_map(my_corp, stemCompletion, dictionary=corp_copy)
+        #stemming
 }
+        
+        
 clean(all)
 
-gc()
+gc(reset=TRUE)
 options(mc.cores=1)
 library(tm)
 library(RWeka)
@@ -98,6 +123,13 @@ write.csv(df_trigram, file="C:/Users/stephanie song/Desktop/tri.csv")
 write.csv(df_quagram, file="C:/Users/stephanie song/Desktop/qua.csv")
 
 
+#write Rdata
+
+
+save(df_unigram, file="C:/Users/stephanie song/Desktop/uni.Rdata")
+save(df_bigram, file="C:/Users/stephanie song/Desktop/bi.Rdata")
+save(df_trigram, file="C:/Users/stephanie song/Desktop/tri.Rdata")
+save(df_quagram, file="C:/Users/stephanie song/Desktop/qua.Rdata")
 
 
 
@@ -108,3 +140,36 @@ write.csv(df_quagram, file="C:/Users/stephanie song/Desktop/qua.csv")
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+#try
+try<-"we've been to u.s. ---&^%%% I'm so happy and we'd like to he's / cat. ..."
+all<-gsub("n't"," not", all) #expand words contractions 
+all<-gsub("'ve"," have", all)
+all<-gsub("'m|’m"," am", all)
+all<-gsub("'ll"," will", all)
+all<-gsub("'s|’s"," is", all)
+all<-gsub(":m","m",all)  # p:m 
+all<-gsub("u.s.","us",all)
+all<-gsub("'re"," are",all)
+all<-gsub("'d|’d"," had",all)
+all<-gsub("N.Y."," NY", all)
+all<-gsub("[0-9]", "", all)
+all<-gsub("“|”|’|‘", " ", all)
+all<-gsub("[[:punct:]]+", " ", all)
+all<-gsub("\u0092|\u0093|\u0094|\u0090","",all)
+all<-gsub("^u$|^U$", "you", all)
+all<-gsub("\\W"," ",all)  #remove not word
+all<-gsub("[^[:alpha:] ]","",all)
+all<-tolower(all)
