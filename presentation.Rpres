@@ -1,0 +1,46 @@
+JHU Capstone project-NLP project
+========================================================
+author: Stephanie
+date: 08/17/2015
+transition: rotate
+
+
+This project uses the knowledge of data science and basic knowledge of NLP(natural language processing)  to build an app that can predict next word with given sentences. See reference link : www.corpora.heliohost.org.
+App use: on mobile phone.
+
+
+Procedure of project: 
+========================================================
+
+-Load in twitts, news and blogs data and randomly select 2000 lines in each data.
+
+-Make corpus, clean the corpus, tokenized corpus, then create termdocumentmatrix for (unigram, bigram, trigram, and quagram).
+
+-Convert tdm to data frame for each gram type(the data frame contains term names, count, and probability that it ocours in the data frame).
+
+-Create function that do the prediction and return a list of terms(the most possible next words).
+
+About this shiny app:
+========================================================
+
+
+![alt text] (s.jpg)
+
+How to use this app?
+========================================================
+
+If you type nothing in the input text, then on the main panel it returns "error". Type a sentence and select which type of ngram prediction you would like to do with, then click "Update" button to see if there shows a list of predicted words on the main panel..
+
+The output(if can predict, it will return a string of words--from the most likely words to the least likely words that appear in the data I read in. (for example: input: "we went to new york","a case of", "the last"--you can try it yourself!)
+
+
+Algorithm for this app: 
+========================================================
+It basically uses Markov chain rule to do the prediction: Bigram: takes last one word and search through bigram data frame and find the possible terms; same with trigram(take last two words) and quagram (take last three words)prediction methods. More information is on introduction page(second page in my app).
+
+Improve in the future:
+
+Future improvement should be improve its speed on prediction and precision. 
+Please paste this link for a try: http://shuangsong.shinyapps.io/final2
+
+Thank you for watching ! 

@@ -4,23 +4,28 @@
 #trigram: predict next word based on previous two words
 #quadgram: predict next word based on previous three words
 
-library(ggplot2)
+#library(ggplot2)
 library(NLP) # for natural language processing
 library(stringr) # package for handling string in R
 library(R.utils) # ultils to count lines
-library(SnowballC) # for steming words.
-library(RWeka) #for n-gram model
-library(ngram) # for n-grams model
-library(qdap) # count word
-library(stringi) # use to count lines fast 
-library(pryr) # to see file size with command object_size
-library(wordcloud) # for wordcloud
+#library(SnowballC) # for steming words.
+#library(RWeka) #for n-gram model
+#library(ngram) # for n-grams model
+#library(qdap) # count word
+#library(stringi) # use to count lines fast 
+#library(pryr) # to see file size with command object_size
+#library(wordcloud) # for wordcloud
 library(tm)
 #read in data frame csv files: 
-df_unigram<-read.csv("C:/Users/stephanie song/Desktop/final/en_US/data/uni.csv")
-df_bigram<-read.csv("C:/Users/stephanie song/Desktop/final/en_US/data/bi.csv")
-df_trigram<-read.csv("C:/Users/stephanie song/Desktop/final/en_US/data/tri.csv")
-df_quagram<-read.csv("C:/Users/stephanie song/Desktop/final/en_US/data/qua.csv")
+df_unigram<-read.csv("./u.csv")
+df_bigram<-read.csv("./b.csv")
+df_trigram<-read.csv("./t.csv")
+df_quagram<-read.csv("./q.csv")
+
+
+#df_bigram<-read.csv("C:/Users/stephanie song/Desktop/final/en_US/data/b.csv")
+#df_trigram<-read.csv("C:/Users/stephanie song/Desktop/final/en_US/data/t.csv")
+#df_quagram<-read.csv("C:/Users/stephanie song/Desktop/final/en_US/data/q.csv")
 
 # add prediction function : (bigram, trigram, and quagram)
 predict_bi<- function(input) {
@@ -39,7 +44,7 @@ predict_bi<- function(input) {
                         uni<-head(uni)
                         term<-as.character(uni$terms)
                         return(term)
-                }
+                } else {
                 #find<-df_bigram[grep(start_with_term, df_bigram$terms),]
                 #merge<-NULL
                 find<-head(find)
@@ -47,7 +52,7 @@ predict_bi<- function(input) {
                 find_mat<-matrix(unlist(strsplit(find$terms, " ")), ncol=2, byrow=TRUE)
                 find$pred<-find_mat[,2]
                 terms<-as.character(find$pred)
-                return(terms)
+                return(terms)}
                 #find2<-df_unigram[grep(paste("^","\\b", clean_tail,"\\b", sep=""), df_unigram$terms),]
                 #if (nrow(find2)==0){
                 #warning("There is no prediction")
@@ -66,11 +71,11 @@ predict_bi<- function(input) {
 }
 #try
 #predict_bi("how do you know last")
-predict_bi("first")
-predict_bi("nice weather")
-predict_bi("what the hell")
-predict_bi("how are you the")
-predict_bi("what the hell")
+#predict_bi("first")
+#predict_bi("nice weather")
+#predict_bi("what the hell")
+#predict_bi("how are you the")
+#predict_bi("what the hell")
 predict_bi("we went to the orlando")
 
 

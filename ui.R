@@ -1,8 +1,12 @@
 library(shiny)
-library(shinythemes)
+#library(shinythemes)
+#library(tm)
+#library(NLP)
+#library(ngram) # for n-grams model
+#library(qdap) # count word
+library(caroline) 
 
-
-shinyUI(fluidPage(theme = shinytheme("cerulean"),
+shinyUI(fluidPage(#theme = shinytheme("cerulean"),
         navbarPage("JHU Capstone project shiny app-NLP in R",inverse = FALSE, collapsible = FALSE,
                    tabPanel("N-gram prediction",
                             sidebarLayout(
@@ -42,7 +46,7 @@ shinyUI(fluidPage(theme = shinytheme("cerulean"),
                                                    #}),
                                                    tableOutput("textout"),
                                                    hr(),
-                                                   helpText("This part shows you a list of predicted next possible words.")
+                                                   helpText("This part shows you a list of predicted next possible words. Please be patient it will takes 2-3 minutes predicting")
                                             
                                                   )
                                              )
